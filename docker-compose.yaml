@@ -8,6 +8,7 @@ services:
       - "3000:80"
     restart: unless-stopped
 
+
   nextjs-app:
     build:
       context: .
@@ -15,4 +16,13 @@ services:
     container_name: allshop-nextjs
     ports:
       - "3001:3000"
+    restart: unless-stopped
+
+  fresh-app:
+    build:
+      context: .
+      dockerfile: ./fresh-app/Dockerfile
+    container_name: allshop-fresh
+    ports:
+      - "3002:8000"
     restart: unless-stopped
