@@ -1,0 +1,53 @@
+import type { Product } from '@/types'
+
+export const MOCK_PRODUCTS: Product[] = [
+  {
+    id: '1', name: 'Áo thun nam cổ tròn Premium Cotton', slug: 'ao-thun-nam-co-tron',
+    description: 'Áo thun nam chất liệu 100% cotton cao cấp, mềm mại, thoáng mát.',
+    price: 199000, originalPrice: 350000, images: ['https://picsum.photos/seed/fashion1/600/600'],
+    category: 'fashion', brand: 'AllShop Basic', rating: 4.5, reviewCount: 128, stock: 50,
+    specifications: { 'Chất liệu': '100% Cotton', 'Xuất xứ': 'Việt Nam' },
+  },
+  {
+    id: '2', name: 'iPhone 15 Pro Max 256GB', slug: 'iphone-15-pro-max',
+    description: 'iPhone 15 Pro Max chính hãng Apple.',
+    price: 29990000, originalPrice: 34990000, images: ['https://picsum.photos/seed/phone1/600/600'],
+    category: 'phones', brand: 'Apple', rating: 4.8, reviewCount: 542, stock: 25,
+  },
+  {
+    id: '3', name: 'Laptop Dell XPS 15 Core i7', slug: 'laptop-dell-xps-15',
+    description: 'Laptop Dell XPS 15 mỏng nhẹ, hiệu năng cao.',
+    price: 35990000, originalPrice: 42990000, images: ['https://picsum.photos/seed/laptop1/600/600'],
+    category: 'computers', brand: 'Dell', rating: 4.7, reviewCount: 89, stock: 15,
+  },
+  {
+    id: '4', name: 'Tai nghe Sony WH-1000XM5', slug: 'tai-nghe-sony-wh1000xm5',
+    description: 'Tai nghe chống ồn chủ động hàng đầu.',
+    price: 7490000, originalPrice: 8990000, images: ['https://picsum.photos/seed/accessory1/600/600'],
+    category: 'accessories', brand: 'Sony', rating: 4.9, reviewCount: 312, stock: 30,
+  },
+  {
+    id: '5', name: 'Máy giặt Samsung Inverter 9.5kg', slug: 'may-giat-samsung',
+    description: 'Máy giặt Samsung công nghệ Inverter tiết kiệm điện.',
+    price: 8990000, originalPrice: 12990000, images: ['https://picsum.photos/seed/elec1/600/600'],
+    category: 'electronics', brand: 'Samsung', rating: 4.6, reviewCount: 67, stock: 10,
+  },
+  {
+    id: '6', name: 'Bộ dụng cụ sửa chữa 120 món', slug: 'bo-dung-cu-sua-chua',
+    description: 'Bộ dụng cụ đa năng 120 món cho gia đình.',
+    price: 890000, originalPrice: 1290000, images: ['https://picsum.photos/seed/tool1/600/600'],
+    category: 'tools', brand: 'Bosch', rating: 4.3, reviewCount: 45, stock: 40,
+  },
+  {
+    id: '7', name: 'Quần jean nam Slim Fit', slug: 'quan-jean-nam-slim-fit',
+    description: 'Quần jean nam co giãn, form slim fit.',
+    price: 450000, originalPrice: 650000, images: ['https://picsum.photos/seed/fashion2/600/600'],
+    category: 'fashion', brand: 'AllShop Basic', rating: 4.4, reviewCount: 203, stock: 60,
+  },
+  {
+    id: '8', name: 'Samsung Galaxy S24 Ultra', slug: 'samsung-galaxy-s24-ultra',
+    description: 'Samsung Galaxy S24 Ultra flagship mới nhất.',
+    price: 27990000, originalPrice: 33990000, images: ['https://picsum.photos/seed/phone2/600/600'],
+    category: 'phones', brand: 'Samsung', rating: 4.7, reviewCount: 389, stock: 20,
+  },
+]

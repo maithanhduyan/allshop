@@ -4,7 +4,7 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
-COPY . .
+COPY ./vite-app .
 RUN pnpm build
 
 # Stage 2: Serve with Nginx

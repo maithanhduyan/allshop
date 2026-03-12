@@ -1,9 +1,18 @@
 services:
-  allshop:
+  vite-app:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: allshop
+      dockerfile: ./vite-app/Dockerfile
+    container_name: allshop-vite
     ports:
-      - "80:80"
+      - "3000:80"
+    restart: unless-stopped
+
+  nextjs-app:
+    build:
+      context: .
+      dockerfile: ./nextjs-app/Dockerfile
+    container_name: allshop-nextjs
+    ports:
+      - "3001:3000"
     restart: unless-stopped

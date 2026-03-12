@@ -1,0 +1,9 @@
+# Next JS
+.next
+out
+build
+node_modules
+dist
+cache
+logs
+*.log
