@@ -1,0 +1,9 @@
+services:
+  allshop:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: allshop
+    ports:
+      - "80:80"
+    restart: unless-stopped
