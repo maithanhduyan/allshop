@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 40" fill="none">
+  <defs>
+    <linearGradient id="logoGrad" x1="0" y1="0" x2="40" y2="40">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+  <!-- Icon -->
+  <rect x="0" y="4" width="32" height="32" rx="8" fill="url(#logoGrad)"/>
+  <text x="16" y="26" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-weight="800" font-size="18" fill="white">A</text>
+  <!-- Text -->
+  <text x="40" y="28" font-family="system-ui,-apple-system,sans-serif" font-weight="800" font-size="22">
+    <tspan fill="#2563EB">All</tspan><tspan fill="#1E293B">Shop</tspan>
+  </text>
+</svg>
