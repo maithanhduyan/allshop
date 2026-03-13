@@ -66,3 +66,45 @@ export interface Invoice {
   cancelledAt?: string
   createdAt: string
 }
+
+export interface Account {
+  id: string
+  code: string
+  name: string
+  type: 'asset' | 'liability' | 'equity' | 'revenue' | 'expense'
+  parentCode?: string
+  level: number
+  isActive: boolean
+  createdAt: string
+}
+
+export interface JournalLine {
+  id: string
+  journalEntryId: string
+  accountCode: string
+  accountName: string
+  description: string
+  debit: number
+  credit: number
+}
+
+export interface JournalEntry {
+  id: string
+  entryNumber: string
+  invoiceId?: string
+  description: string
+  entryDate: string
+  status: 'posted' | 'reversed'
+  reversedBy?: string
+  reverses?: string
+  lines?: JournalLine[]
+  createdAt: string
+}
+
+export interface TrialBalanceRow {
+  accountCode: string
+  accountName: string
+  totalDebit: number
+  totalCredit: number
+  balance: number
+}
