@@ -1,12 +1,13 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { CATEGORIES } from '@/lib/constants'
-import { MOCK_PRODUCTS } from '@/lib/mock-data'
+import { getProducts } from '@/lib/api-client'
 import { formatPrice } from '@/lib/format-price'
 import { ProductGrid } from '@/components/product-grid'
 
-export default function HomePage() {
-  const flashSaleProducts = MOCK_PRODUCTS.filter((p) => p.originalPrice).slice(0, 4)
+export default async function HomePage() {
+  const products = await getProducts()
+  const flashSaleProducts = products.filter((p) => p.originalPrice).slice(0, 4)
 
   return (
     <div className="min-h-screen">
@@ -92,7 +93,7 @@ export default function HomePage() {
               style={{ animationDelay: `${i * 80}ms` }}
             >
               <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-50 text-2xl transition-transform group-hover:scale-110 dark:bg-primary-900/30">
-                {cat.icon}
+                {cat.emoji}
               </span>
               <span className="text-xs font-semibold text-gray-700 dark:text-gray-300 sm:text-sm">
                 {cat.name}
@@ -172,7 +173,7 @@ export default function HomePage() {
           </h2>
           <div className="h-px flex-1 bg-gray-200 dark:bg-gray-800" />
         </div>
-        <ProductGrid products={MOCK_PRODUCTS} />
+        <ProductGrid products={products} />
       </section>
     </div>
   )

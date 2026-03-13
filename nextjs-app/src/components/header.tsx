@@ -132,7 +132,7 @@ export function Header() {
               href={`/?category=${cat.id}`}
               className="rounded-lg px-3 py-1.5 text-sm font-medium text-gray-600 transition-all hover:bg-primary-50 hover:text-primary-600 dark:text-gray-400 dark:hover:bg-primary-900/30 dark:hover:text-primary-400"
             >
-              {cat.icon} {cat.name}
+              {cat.emoji} {cat.name}
             </Link>
           ))}
         </div>
@@ -177,7 +177,7 @@ export function Header() {
               onClick={() => setMenuOpen(false)}
               style={{ animationDelay: `${i * 50}ms` }}
             >
-              <span className="text-lg">{cat.icon}</span>
+              <span className="text-lg">{cat.emoji}</span>
               {cat.name}
             </Link>
           ))}
