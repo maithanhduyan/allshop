@@ -1,5 +1,5 @@
 import { API_BASE_URL } from '@/lib/constants'
-import type { Product } from '@/types'
+import type { Product, DashboardSummary } from '@/types'
 import { MOCK_PRODUCTS } from '@/lib/mock-data'
 import { DashboardClient } from './dashboard-client'
 
@@ -46,8 +46,17 @@ async function getOrders(): Promise<Order[]> {
   ]
 }
 
+async function getAccountingSummary(): Promise<DashboardSummary> {
+  return {
+    invoices: { total: 6, issued: 5, cancelled: 1, revenue: 128455200, tax: 9515200 },
+    journalEntries: { total: 6, posted: 5, reversed: 1 },
+    accounting: { totalDebit: 128486800, totalCredit: 128486800, isBalanced: true, totalAccounts: 20 },
+    orders: { total: 6, revenue: 105958000 },
+  }
+}
+
 export default async function AdminDashboard() {
-  const [products, orders] = await Promise.all([getProducts(), getOrders()])
+  const [products, orders, accountingSummary] = await Promise.all([getProducts(), getOrders(), getAccountingSummary()])
 
   const totalRevenue = orders.filter((o) => o.status !== 'cancelled').reduce((s, o) => s + o.total, 0)
   const totalOrders = orders.length
@@ -76,6 +85,7 @@ export default async function AdminDashboard() {
       statusCounts={statusCounts}
       recentOrders={orders.slice(0, 5)}
       topProducts={products.slice(0, 5)}
+      accountingSummary={accountingSummary}
     />
   )
 }

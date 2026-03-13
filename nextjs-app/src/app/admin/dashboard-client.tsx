@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { formatPrice } from '@/lib/format-price'
-import type { Product } from '@/types'
+import type { Product, DashboardSummary } from '@/types'
 
 interface Props {
   totalRevenue: number
@@ -20,6 +20,7 @@ interface Props {
     createdAt: string
   }[]
   topProducts: Product[]
+  accountingSummary: DashboardSummary
 }
 
 const STATUS_MAP: Record<string, { label: string; color: string }> = {
@@ -49,6 +50,7 @@ export function DashboardClient({
   statusCounts,
   recentOrders,
   topProducts,
+  accountingSummary,
 }: Props) {
   const statCards = [
     {
@@ -140,6 +142,63 @@ export function DashboardClient({
             <div className={`absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r ${card.gradient} opacity-0 transition-opacity group-hover:opacity-100`} />
           </div>
         ))}
+      </div>
+
+      {/* Accounting Summary */}
+      <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+        <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-800">
+          <h2 className="text-base font-semibold text-gray-900 dark:text-white">
+            Tổng quan kế toán
+          </h2>
+          <Link
+            href="/admin/reports"
+            className="text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400"
+          >
+            Xem báo cáo →
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 divide-x divide-gray-100 dark:divide-gray-800 sm:grid-cols-4">
+          <div className="px-6 py-4">
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Doanh thu hóa đơn</p>
+            <p className="mt-1 text-lg font-bold text-green-600">{formatPrice(accountingSummary.invoices.revenue)}</p>
+            <p className="mt-0.5 text-[11px] text-gray-400">{accountingSummary.invoices.issued} HĐ phát hành / {accountingSummary.invoices.cancelled} đã hủy</p>
+          </div>
+          <div className="px-6 py-4">
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Thuế GTGT</p>
+            <p className="mt-1 text-lg font-bold text-orange-600">{formatPrice(accountingSummary.invoices.tax)}</p>
+            <p className="mt-0.5 text-[11px] text-gray-400">{accountingSummary.invoices.total} hóa đơn tổng</p>
+          </div>
+          <div className="px-6 py-4">
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Bút toán</p>
+            <p className="mt-1 text-lg font-bold text-blue-600">{accountingSummary.journalEntries.posted}/{accountingSummary.journalEntries.total}</p>
+            <p className="mt-0.5 text-[11px] text-gray-400">đã ghi sổ / {accountingSummary.journalEntries.reversed} đã đảo</p>
+          </div>
+          <div className="px-6 py-4">
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Cân đối sổ sách</p>
+            <p className="mt-1 flex items-center gap-1.5">
+              {accountingSummary.accounting.isBalanced ? (
+                <>
+                  <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+                    <svg className="h-3 w-3 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                    </svg>
+                  </span>
+                  <span className="text-lg font-bold text-green-600 dark:text-green-400">Cân đối</span>
+                </>
+              ) : (
+                <>
+                  <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+                    <svg className="h-3 w-3 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                  </span>
+                  <span className="text-lg font-bold text-red-600 dark:text-red-400">Lệch</span>
+                </>
+              )}
+            </p>
+            <p className="mt-0.5 text-[11px] text-gray-400">{accountingSummary.accounting.totalAccounts} tài khoản</p>
+          </div>
+        </div>
       </div>
 
       {/* Charts Row */}

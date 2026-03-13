@@ -108,3 +108,74 @@ export interface TrialBalanceRow {
   totalCredit: number
   balance: number
 }
+
+/* ─────────── Report types (Stage 3) ─────────── */
+
+export interface RevenueDay {
+  date: string
+  invoiceCount: number
+  subtotal: number
+  tax: number
+  total: number
+}
+
+export interface RevenueReport {
+  from: string
+  to: string
+  days: RevenueDay[]
+  totalInvoices: number
+  totalSubtotal: number
+  totalTax: number
+  totalRevenue: number
+}
+
+export interface TaxReport {
+  from: string
+  to: string
+  outputTax: number
+  inputTax: number
+  cancelledTax: number
+  netTaxPayable: number
+}
+
+export interface AccountBalanceRow {
+  accountCode: string
+  accountName: string
+  openingDebit: number
+  openingCredit: number
+  periodDebit: number
+  periodCredit: number
+  closingDebit: number
+  closingCredit: number
+}
+
+export interface AccountBalanceReport {
+  from: string
+  to: string
+  accounts: AccountBalanceRow[]
+}
+
+export interface DashboardSummary {
+  invoices: {
+    total: number
+    issued: number
+    cancelled: number
+    revenue: number
+    tax: number
+  }
+  journalEntries: {
+    total: number
+    posted: number
+    reversed: number
+  }
+  accounting: {
+    totalDebit: number
+    totalCredit: number
+    isBalanced: boolean
+    totalAccounts: number
+  }
+  orders: {
+    total: number
+    revenue: number
+  }
+}
