@@ -43,6 +43,7 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [invoiceMsg, setInvoiceMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   useEffect(() => {
     if (!token) {
@@ -69,6 +70,30 @@ export default function OrdersPage() {
 
   if (!token) return null
 
+  const handleCreateInvoice = async (orderId: string) => {
+    setInvoiceMsg(null)
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/orders/${orderId}/invoice`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ taxRate: 0.08 }),
+      })
+      if (res.ok) {
+        const invoice = await res.json()
+        setInvoiceMsg({ type: 'success', text: `Đã tạo hóa đơn ${invoice.invoiceNumber}` })
+        setTimeout(() => router.push(`/invoices/${invoice.id}`), 1500)
+      } else {
+        const err = await res.json()
+        setInvoiceMsg({ type: 'error', text: err.error || 'Không thể tạo hóa đơn' })
+      }
+    } catch {
+      setInvoiceMsg({ type: 'error', text: 'Lỗi kết nối' })
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
@@ -81,13 +106,34 @@ export default function OrdersPage() {
     <div className="mx-auto max-w-3xl px-4 py-8">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold dark:text-white">Đơn hàng của tôi</h1>
-        <Link
-          href="/profile"
-          className="text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400"
-        >
-          ← Tài khoản
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/invoices"
+            className="text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400"
+          >
+            🧾 Hóa đơn
+          </Link>
+          <Link
+            href="/profile"
+            className="text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400"
+          >
+            ← Tài khoản
+          </Link>
+        </div>
       </div>
+
+      {/* Invoice notification */}
+      {invoiceMsg && (
+        <div
+          className={`mb-4 rounded-xl px-4 py-3 text-sm font-medium ${
+            invoiceMsg.type === 'success'
+              ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400'
+              : 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400'
+          }`}
+        >
+          {invoiceMsg.text}
+        </div>
+      )}
 
       {orders.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white py-16 dark:border-gray-700 dark:bg-gray-900">
@@ -192,6 +238,21 @@ export default function OrdersPage() {
                         </p>
                       )}
                     </div>
+
+                    {/* Invoice action */}
+                    {(order.status === 'confirmed' || order.status === 'shipping' || order.status === 'delivered') && (
+                      <div className="mt-3 flex justify-end">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleCreateInvoice(order.id)
+                          }}
+                          className="rounded-xl border border-primary-300 px-4 py-2 text-sm font-medium text-primary-600 transition-colors hover:bg-primary-50 dark:border-primary-700 dark:text-primary-400 dark:hover:bg-primary-900/20"
+                        >
+                          🧾 Tạo hóa đơn
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
