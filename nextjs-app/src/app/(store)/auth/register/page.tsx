@@ -3,17 +3,45 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useAppDispatch } from '@/store/hooks'
+import { setCredentials } from '@/store/auth-slice'
+import { API_BASE_URL } from '@/lib/constants'
 
 export default function RegisterPage() {
   const router = useRouter()
+  const dispatch = useAppDispatch()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Demo — just redirect to login
-    router.push('/auth/login')
+    setError('')
+    if (password.length < 6) {
+      setError('Mật khẩu phải có ít nhất 6 ký tự')
+      return
+    }
+    setLoading(true)
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || 'Đăng ký thất bại')
+        return
+      }
+      dispatch(setCredentials({ token: data.token, user: data.user }))
+      router.push('/')
+    } catch {
+      setError('Không thể kết nối đến máy chủ')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -25,6 +53,12 @@ export default function RegisterPage() {
             Tạo tài khoản AllShop mới
           </p>
         </div>
+
+        {error && (
+          <div className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600 dark:bg-red-900/30 dark:text-red-400">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -60,6 +94,7 @@ export default function RegisterPage() {
             <input
               type="password"
               required
+              minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:ring-primary-800"
@@ -68,9 +103,10 @@ export default function RegisterPage() {
           </div>
           <button
             type="submit"
-            className="w-full rounded-xl bg-primary-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-primary-700"
+            disabled={loading}
+            className="w-full rounded-xl bg-primary-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-primary-700 disabled:opacity-50"
           >
-            Đăng ký
+            {loading ? 'Đang xử lý...' : 'Đăng ký'}
           </button>
         </form>
 

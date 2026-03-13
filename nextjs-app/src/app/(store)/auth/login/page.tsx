@@ -3,16 +3,40 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useAppDispatch } from '@/store/hooks'
+import { setCredentials } from '@/store/auth-slice'
+import { API_BASE_URL } from '@/lib/constants'
 
 export default function LoginPage() {
   const router = useRouter()
+  const dispatch = useAppDispatch()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Demo — just redirect to home
-    router.push('/')
+    setError('')
+    setLoading(true)
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || 'Đăng nhập thất bại')
+        return
+      }
+      dispatch(setCredentials({ token: data.token, user: data.user }))
+      router.push('/')
+    } catch {
+      setError('Không thể kết nối đến máy chủ')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -24,6 +48,12 @@ export default function LoginPage() {
             Chào mừng bạn quay lại AllShop
           </p>
         </div>
+
+        {error && (
+          <div className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600 dark:bg-red-900/30 dark:text-red-400">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -54,9 +84,10 @@ export default function LoginPage() {
           </div>
           <button
             type="submit"
-            className="w-full rounded-xl bg-primary-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-primary-700"
+            disabled={loading}
+            className="w-full rounded-xl bg-primary-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-primary-700 disabled:opacity-50"
           >
-            Đăng nhập
+            {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
           </button>
         </form>
 
