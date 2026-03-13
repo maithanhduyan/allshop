@@ -35,6 +35,7 @@ export default function InvoiceDetailPage() {
   const [invoice, setInvoice] = useState<Invoice | null>(null)
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState(false)
+  const [copied, setCopied] = useState(false)
 
   const fetchInvoice = useCallback(() => {
     if (!token || !params.id) return
@@ -104,6 +105,36 @@ export default function InvoiceDetailPage() {
     }
   }
 
+  const handleDownloadPDF = async () => {
+    if (!token || !invoice) return
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/invoices/${invoice.id}/pdf`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (!res.ok) return
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${invoice.invoiceNumber}.pdf`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      URL.revokeObjectURL(url)
+    } catch {
+      // ignore
+    }
+  }
+
+  const handleCopyLink = () => {
+    if (!invoice?.publicKey) return
+    const url = `${window.location.origin}/p/invoices/${invoice.publicKey}`
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
+
   if (!token) return null
 
   if (loading) {
@@ -149,7 +180,24 @@ export default function InvoiceDetailPage() {
         >
           ← Danh sách hóa đơn
         </Link>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          {/* PDF download – available for issued invoices */}
+          {invoice.status === 'issued' && (
+            <>
+              <button
+                onClick={handleDownloadPDF}
+                className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+              >
+                📥 Tải PDF
+              </button>
+              <button
+                onClick={handleCopyLink}
+                className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
+              >
+                {copied ? '✓ Đã sao chép!' : '🔗 Sao chép link'}
+              </button>
+            </>
+          )}
           {invoice.status === 'draft' && (
             <>
               <button

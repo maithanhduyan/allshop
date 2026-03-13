@@ -46,6 +46,7 @@ export interface InvoiceItem {
 
 export interface Invoice {
   id: string
+  publicKey: string
   invoiceNumber: string
   orderId: string
   userId: string
